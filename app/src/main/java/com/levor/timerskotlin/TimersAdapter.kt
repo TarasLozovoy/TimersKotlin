@@ -11,7 +11,7 @@ import android.widget.TextView
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class TimersAdapter(context : Context, var elements : Array<Event>) : BaseAdapter() {
+class TimersAdapter(context : Context, var elements : List<Event>) : BaseAdapter() {
 
     private var time : GregorianCalendar = GregorianCalendar()
 
@@ -21,7 +21,7 @@ class TimersAdapter(context : Context, var elements : Array<Event>) : BaseAdapte
 
         h.postDelayed(object : Runnable {
             override fun run() {
-                time = GregorianCalendar()
+                time.time = Date()
                 this@TimersAdapter.notifyDataSetChanged()
                 h.postDelayed(this, delay)
             }
@@ -45,7 +45,7 @@ class TimersAdapter(context : Context, var elements : Array<Event>) : BaseAdapte
             view!!.tag = holder
         }
 
-        var timeLeft = elements[position].endDate - time.get(Calendar.SECOND)
+        var timeLeft = (elements[position].endDate - time.timeInMillis) / 1000L
         val days : Long = TimeUnit.SECONDS.toDays(timeLeft)
         timeLeft = TimeUnit.DAYS.toSeconds(days) - timeLeft
         val hours : Long = TimeUnit.SECONDS.toHours(timeLeft)

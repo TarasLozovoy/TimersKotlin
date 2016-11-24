@@ -3,13 +3,12 @@ package com.levor.timerskotlin
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ListView
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var listview : ListView
@@ -21,12 +20,9 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
+
+
         listview = findViewById(R.id.listView) as ListView
-        adapter = TimersAdapter(this, arrayOf(Event("Title1", GregorianCalendar().get(Calendar.SECOND) + 200L),
-                Event("Title2", GregorianCalendar().get(Calendar.SECOND) + 300L),
-                Event("Title3", GregorianCalendar().get(Calendar.SECOND) + 30000L),
-                Event("Title4", GregorianCalendar().get(Calendar.SECOND) + 300000L)))
-        listview.adapter = adapter;
         listview.setOnItemClickListener{ parent, view, position, id ->
             val intent : Intent = Intent(view.context, EditEventActivity::class.java)
             startActivity(intent)
@@ -34,9 +30,17 @@ class MainActivity : AppCompatActivity() {
 
         val fab = findViewById(R.id.fab) as FloatingActionButton
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+            val intent : Intent = Intent(view.context, EditEventActivity::class.java)
+            startActivity(intent)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val events : List<Event> = EventsProvider.getInstance(this).getAllEvents()
+        for (e in events) Log.e("TAGGG", e.title + " " + e.endDate)
+        adapter = TimersAdapter(this, events)
+        listview.adapter = adapter;
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
