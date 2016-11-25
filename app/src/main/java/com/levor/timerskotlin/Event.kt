@@ -25,8 +25,9 @@ class Event() {
     @DatabaseField(columnName = END_DATE)
     var endDate : Long = 0L
 
-    constructor(title: String, endDate: Long) : this() {
+    constructor(title: String, endDate: Long, imagePath: String) : this() {
         this.title = title
         this.endDate = endDate
+        this.imagePath = imagePath
     }
 }

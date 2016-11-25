@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.levor.timerskotlin.utils.BitmapUtils
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class TimersAdapter(context : Context, var elements : List<Event>) : BaseAdapter() {
+class TimersAdapter(context: Context, var elements: List<Event>) : BaseAdapter() {
 
-    private var time : GregorianCalendar = GregorianCalendar()
+    private var time: GregorianCalendar = GregorianCalendar()
+    private var updateImage = BooleanArray(elements.size, { i -> false})
 
     init {
         val h = Handler()
@@ -47,20 +49,24 @@ class TimersAdapter(context : Context, var elements : List<Event>) : BaseAdapter
 
         var timeLeft = (elements[position].endDate - time.timeInMillis) / 1000L
         val days : Long = TimeUnit.SECONDS.toDays(timeLeft)
-        timeLeft = TimeUnit.DAYS.toSeconds(days) - timeLeft
+        timeLeft -= TimeUnit.DAYS.toSeconds(days)
         val hours : Long = TimeUnit.SECONDS.toHours(timeLeft)
-        timeLeft = TimeUnit.HOURS.toSeconds(hours) - timeLeft
+        timeLeft -= TimeUnit.HOURS.toSeconds(hours)
         val minutes : Long = TimeUnit.SECONDS.toMinutes(timeLeft)
         val seconds : Long = timeLeft - TimeUnit.MINUTES.toSeconds(minutes)
 
         val sb : StringBuilder = StringBuilder()
-        if (days > 0) sb.append(days).append(" day(s), ")
-        if (hours > 0) sb.append(String.format("%02d hours, ", hours))
+        if (days > 0) sb.append(days).append(" d, ")
+        if (hours > 0) sb.append(String.format("%02d h, ", hours))
         if (minutes > 0) sb.append(String.format("%02d min, ", minutes))
         sb.append(String.format("%02d sec", seconds))
 
         holder.name.text = elements[position].title
         holder.timer.text = sb.toString()
+        if (!updateImage[position]) {
+            holder.image.setImageBitmap(BitmapUtils.getScaledBitmap(elements[position].imagePath, holder.image.maxWidth))
+            updateImage[position] = true
+        }
 
         return view
     }
