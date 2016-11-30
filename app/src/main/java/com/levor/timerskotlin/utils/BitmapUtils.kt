@@ -2,13 +2,21 @@ package com.levor.timerskotlin.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.AsyncTask
+import android.widget.ImageView
 
 import java.io.IOException
+import java.lang.ref.WeakReference
 
 object BitmapUtils {
 
     @Throws(IOException::class)
-    fun getScaledBitmap(filePath: String, maxSideSize: Int): Bitmap {
+    fun loadBitmap(bitmapFilePath: String, maxSideSize: Int, imageView: ImageView) {
+        LoadBitmapAsyncTask().execute(imageView, bitmapFilePath, maxSideSize)
+    }
+
+    @Throws(IOException::class)
+    private fun getScaledBitmap(filePath: String, maxSideSize: Int): Bitmap {
         // First decode with inJustDecodeBounds=true to check dimensions
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
@@ -42,5 +50,26 @@ object BitmapUtils {
         }
 
         return inSampleSize
+    }
+
+    private class LoadBitmapAsyncTask : AsyncTask<Any, Void, Bitmap>() {
+        private var imageView: WeakReference<ImageView>? = null
+
+        override fun doInBackground(vararg params: Any?): Bitmap {
+            val image = params[0]
+            if (image is ImageView) {
+                imageView = WeakReference(image)
+            }
+
+            val filePath = params[1] as String
+            val maxSideSize = params[2] as Int
+            return getScaledBitmap(filePath, maxSideSize)
+        }
+
+        override fun onPostExecute(result: Bitmap?) {
+            val imageViewToUpdate = imageView?.get()
+            imageViewToUpdate?.setImageBitmap(result)
+        }
+
     }
 }

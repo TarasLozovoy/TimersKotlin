@@ -37,4 +37,6 @@ class EventsProvider private constructor(context: Context){
 
     fun getAllEvents() : List<Event>  = eventDao.queryForAll()
 
+    fun getEventById(id: Int) : Event? = eventDao.queryForId(id)
+
 }

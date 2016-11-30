@@ -24,8 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         listview = findViewById(R.id.listView) as ListView
         listview.setOnItemClickListener{ parent, view, position, id ->
-            val intent : Intent = Intent(view.context, EditEventActivity::class.java)
-            startActivity(intent)
+            EditEventActivity.start(this, adapter.getItem(position).id)
         }
 
         val fab = findViewById(R.id.fab) as FloatingActionButton
@@ -40,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         val events : List<Event> = EventsProvider.getInstance(this).getAllEvents()
         for (e in events) Log.e("TAGGG", e.title + " " + e.endDate)
         adapter = TimersAdapter(this, events)
-        listview.adapter = adapter;
+        listview.adapter = adapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

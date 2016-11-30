@@ -55,16 +55,20 @@ class TimersAdapter(context: Context, var elements: List<Event>) : BaseAdapter()
         val minutes : Long = TimeUnit.SECONDS.toMinutes(timeLeft)
         val seconds : Long = timeLeft - TimeUnit.MINUTES.toSeconds(minutes)
 
-        val sb : StringBuilder = StringBuilder()
-        if (days > 0) sb.append(days).append(" d, ")
-        if (hours > 0) sb.append(String.format("%02d h, ", hours))
-        if (minutes > 0) sb.append(String.format("%02d min, ", minutes))
-        sb.append(String.format("%02d sec", seconds))
+        val sb: StringBuilder = StringBuilder()
+        if (seconds > 0) {
+            if (days > 0) sb.append(days).append(" d, ")
+            if (hours > 0) sb.append(String.format("%02d h, ", hours))
+            if (minutes > 0) sb.append(String.format("%02d min, ", minutes))
+            sb.append(String.format("%02d sec", seconds))
+        } else {
+            sb.append("Done")
+        }
 
         holder.name.text = elements[position].title
         holder.timer.text = sb.toString()
         if (!updateImage[position]) {
-            holder.image.setImageBitmap(BitmapUtils.getScaledBitmap(elements[position].imagePath, holder.image.maxWidth))
+            BitmapUtils.loadBitmap(elements[position].imagePath, holder.image.maxWidth, holder.image)
             updateImage[position] = true
         }
 
