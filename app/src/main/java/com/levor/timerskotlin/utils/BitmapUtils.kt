@@ -55,13 +55,14 @@ object BitmapUtils {
     private class LoadBitmapAsyncTask : AsyncTask<Any, Void, Bitmap>() {
         private var imageView: WeakReference<ImageView>? = null
 
-        override fun doInBackground(vararg params: Any?): Bitmap {
+        override fun doInBackground(vararg params: Any?): Bitmap? {
             val image = params[0]
             if (image is ImageView) {
                 imageView = WeakReference(image)
             }
 
             val filePath = params[1] as String
+            if (filePath.isEmpty()) return null
             val maxSideSize = params[2] as Int
             return getScaledBitmap(filePath, maxSideSize)
         }

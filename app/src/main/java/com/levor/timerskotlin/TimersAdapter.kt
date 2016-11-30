@@ -56,13 +56,14 @@ class TimersAdapter(context: Context, var elements: List<Event>) : BaseAdapter()
         val seconds : Long = timeLeft - TimeUnit.MINUTES.toSeconds(minutes)
 
         val sb: StringBuilder = StringBuilder()
-        if (seconds > 0) {
+
+        if (seconds <= 0L && minutes <= 0 && hours <= 0 && days <= 0) {
+            sb.append("Done")
+        } else {
             if (days > 0) sb.append(days).append(" d, ")
             if (hours > 0) sb.append(String.format("%02d h, ", hours))
             if (minutes > 0) sb.append(String.format("%02d min, ", minutes))
             sb.append(String.format("%02d sec", seconds))
-        } else {
-            sb.append("Done")
         }
 
         holder.name.text = elements[position].title
