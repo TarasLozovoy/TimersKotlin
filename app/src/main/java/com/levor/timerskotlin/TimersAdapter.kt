@@ -69,7 +69,7 @@ class TimersAdapter(context: Context, var elements: List<Event>) : BaseAdapter()
         holder.name.text = elements[position].title
         holder.timer.text = sb.toString()
         if (!updateImage[position]) {
-            BitmapUtils.loadBitmap(elements[position].imagePath, holder.image.maxWidth, holder.image)
+            BitmapUtils.loadBitmap(elements[position].imagePath, 40, holder.image)
             updateImage[position] = true
         }
 

@@ -64,12 +64,18 @@ object BitmapUtils {
             val filePath = params[1] as String
             if (filePath.isEmpty()) return null
             val maxSideSize = params[2] as Int
-            return getScaledBitmap(filePath, maxSideSize)
+            var bitmap: Bitmap? = null
+            try {
+                bitmap = getScaledBitmap(filePath, maxSideSize)
+            } catch (ignore: IOException) {}
+            return bitmap
         }
 
         override fun onPostExecute(result: Bitmap?) {
             val imageViewToUpdate = imageView?.get()
-            imageViewToUpdate?.setImageBitmap(result)
+            if (result != null) {
+                imageViewToUpdate?.setImageBitmap(result)
+            }
         }
 
     }
